@@ -89,9 +89,10 @@ Let's create an **empty** dataframe with column names to keep all the new record
 newRecords = pd.DataFrame(columns=['LastVisit','title','url','last_visit_time'])
 newRecords
 ```
-
-LastVisit |	title|url|	last_visit_time
+```markdown
+LastVisit |title|url|last_visit_time
 ----|----|----|----
+```
 
 Then, we can loop through our `myHisSummary` dataframe to get the *new* history records from our browsers. 
 ```python
