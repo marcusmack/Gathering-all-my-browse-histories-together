@@ -59,10 +59,10 @@ Here is the result.
 
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
-|4|Brave|1396|13226044647296850|2020-02-12 21:17:27
-|3|Opera|2691|13223464426906810|2020-01-14 00:33:46
-|2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
-|1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
+4|Brave|1396|13226044647296850|2020-02-12 21:17:27
+3|Opera|2691|13223464426906810|2020-01-14 00:33:46
+2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
+1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
 
 Total records by browsers(`totHistories`) are also pulled because we will need them to verify our result. You might wonder why there are two columns(`latestVisitedTime` and `LastVisit`) for the last visit time. 
 * Column `latestVisitedTime` in numeric format is the timestamp that the browsers use. 
@@ -89,6 +89,7 @@ Let's create an **empty** dataframe with column names to keep all the new record
 newRecords = pd.DataFrame(columns=['LastVisit','title','url','last_visit_time'])
 newRecords
 ```
+
 LastVisit |	title|url|	last_visit_time
 ----|----|----|----
 
@@ -210,10 +211,10 @@ The `LastVisit` column of the summary result changed from our previous result.
 
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
-|4|Brave|1396|13226044647296850|2020-02-12 21:17:27
-|3|Opera|2691|13223464426906810|2020-01-14 00:33:46
-|2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
-|1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
+4|Brave|1396|13226044647296850|2020-02-12 21:17:27
+3|Opera|2691|13223464426906810|2020-01-14 00:33:46
+2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
+1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
 
 Great! We can commit our update query's work to the DB now.
 ```python
@@ -227,10 +228,10 @@ pd.read_sql(query,myHistoryDB)
 
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
-|4|Brave|1392|13226127757503206|2020-02-13 20:22:37
-|3|Opera|2681|13223464426906810|2020-01-14 00:33:46
-|2|Vivaldi|3590|13226125535957899|2020-02-13 19:45:35
-|1|FireFox|4262|1581657153485000|2020-02-13 21:12:33
+4|Brave|1392|13226127757503206|2020-02-13 20:22:37
+3|Opera|2681|13223464426906810|2020-01-14 00:33:46
+2|Vivaldi|3590|13226125535957899|2020-02-13 19:45:35
+1|FireFox|4262|1581657153485000|2020-02-13 21:12:33
 
 Worked as expected. -   :fireworks: -   :fireworks:
 
