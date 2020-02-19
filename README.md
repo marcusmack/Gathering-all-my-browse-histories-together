@@ -92,7 +92,7 @@ newRecords
 
 LastVisit|title|url|last_visit_time
 ----|----|----|----
-
+ | | | |
 
 Then, we can loop through our `myHisSummary` dataframe to get the *new* history records from our browsers. 
 ```python
