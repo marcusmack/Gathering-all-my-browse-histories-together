@@ -224,6 +224,7 @@ myHistoryDB.commit()
 ```python
 pd.read_sql(query,myHistoryDB)
 ```
+
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
 |4|Brave|1392|13226127757503206|2020-02-13 20:22:37
