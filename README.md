@@ -1,18 +1,18 @@
-This post is to demo how to get records from different databases, do some data massages, then consolidate them into one SQL database table using python. So if you want to find something from your web browser history, you will only need to look for it in one place (the consolidated table) instead of opening and searching _all_ the browsers you use/used.
+This post is to demo how to get records from different databases, do some data massages, then consolidate them into one SQL database table using python. So if you want to find something web browser history in this case, you will only need to look for it in one place (the consolidated table) instead of opening and searching _all_ the browsers you use/used.
 
 **Disclaimer:** This is the very first original post of my code work. Please bear with me on my writing, wording, and formats, etc.   :sweat_smile:
-As well as, this is just a weekend project for fun (even though it took me more than one weekend. :sweat_smile:). 
+Also, this is just a weekend project for fun only (even though it took me more than one weekend to finalize it. :sweat_smile:). So my codes might not optimize for big datebases.
 
 Let's get started.
 
 ### Creating connections and have the SQL queries ready.
 
-First of all, import libraries and create connection to our DB.
+Import libraries and create connection to our DB.
 ``` Python
 import pandas as pd, sqlite3
 myHistoryDB = sqlite3.connect(r"your DB's path") # this is the DB that contains everything.
 ```
-Also, create connections with browsers' DBs and put them into a dictionary. 
+Create connections with browsers' DBs and put them into a dictionary. 
 ```python
 ffconn = sqlite3.connect(r"your browser's DB's path")
 vvconn = sqlite3.connect(r"your browser's DB's path")
@@ -40,10 +40,10 @@ queries = {1:FFquery, 2:chrquery , 3:chrquery, 4:chrquery}
 ```
 **Pretty easy right?** 
 
-This post is about adding new records to an existing table. 
-Let's assume that table `History` which is the table stores all the records, was created and has records in it already. 
+*Premise:* This post is about adding new records to an existing table. 
+The `History` table which is the table stores all the records, was created and has records in it already. 
 ### Interacting with databases.
-Let's get the latest history records from table `History` by browsers. 
+Let's get the latest history records by browsers from table `History`. 
 ```Python
 query = '''
 SELECT BrowserID,Browser,count(*) as totHistories,max(last_visit_time) as latestVisitedTime, max(LastVisit) as LastVisit
@@ -55,7 +55,7 @@ order by BrowserID desc;
 myHisSummary = pd.read_sql(query,myHistoryDB)
 myHisSummary
 ```
-Here is the result. 
+Here is the result of myHisSummary.
 
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
@@ -64,11 +64,11 @@ BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
 1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
 
-Total records by browsers(`totHistories`) are also pulled because we will need them to verify our result. You might wonder why there are two columns(`latestVisitedTime` and `LastVisit`) for the last visit time. 
-* Column `latestVisitedTime` in numeric format is the timestamp that the browsers use. 
+Total records by browsers(`totHistories`) are also pulled because we will need them to verify our work. You might wonder why there are two columns(`latestVisitedTime` and `LastVisit`) for the last visit time. 
+* Column `latestVisitedTime` in numeric format is the timestamp the browsers use. 
 * Column `LastVisit` is the timestamp for our reference.
 
-It is my habit to keep a copy of the table we are going to change. So if something goes south, I can undo it easily. But it might consume too much computation power if the table is getting too big.
+It is my habit to keep a copy of the table I am going to change. So if something goes south, I can undo it easily. But it might consume too much computation power if the table is getting too big.
 ```Python
 allRecords = pd.read_sql(r'select * from History',myHistoryDB)
 ```
@@ -84,7 +84,8 @@ id | LastVisit	| title	| url	| last_visit_time	| BrowserID
 
 **Piece of cake right? Let dive into the fun part.  :muscle:**
 
-Let's create an **empty** dataframe with column names to keep all the new records from different browsers together.
+First of all, create an **empty** dataframe with column names to keep all the new records from different browsers together.
+*New records* mean browse records after our last code run.
 ```python
 newRecords = pd.DataFrame(columns=['LastVisit','title','url','last_visit_time'])
 newRecords
@@ -99,7 +100,8 @@ Then, we can loop through our `myHisSummary` dataframe to get the *new* history 
 for (r0,bid,browser,totCount,lastVisitTime,LastVisit) in myHisSummary.itertuples():
     print ('======',browser,', last vistied time:',lastVisitTime,'which means',LastVisit,'========')
     newRec = pd.read_sql(queries[bid].format(lastVisitTime),browserConns[bid])
-# records from the browsers do not have browserID. We need to add it a 'BrowserID' column according to our `History` table.
+# records from the browsers do not have browserID. 
+# We need to add it a 'BrowserID' column according to our `History` table.
     newRec['BrowserID'] = bid 
 #     print(newRec.tail())
     print ('-----------------------------------------------------------')
@@ -126,7 +128,7 @@ Here is the summary output.
 	FireFox new records: 445 since last update
 ------------------------------------------------------------
 ```
-***Bonus Reading:*** Thanks to [Wei Xia](https://medium.com/@xiawei27149)'s this wonderful [article](https://medium.com/swlh/how-to-efficiently-loop-through-pandas-dataframe-660e4660125d) . I realized that using the build-in `itertuples` function is not the best way to loop through the dataframe(DF). But since our `myHisSummary` DF has only 4 rows, it won't be any big difference. So I keep the `.itertuples` method in order to show how it works. :smiley:
+***Bonus Reading:*** Thanks to [Wei Xia](https://medium.com/@xiawei27149)'s this wonderful [article](https://medium.com/swlh/how-to-efficiently-loop-through-pandas-dataframe-660e4660125d) . I realized that using the build-in `itertuples` function is not the best way to loop through a dataframe(DF). But since our `myHisSummary` DF has only 4 rows, it won't be any big difference. So I keep the `itertuples` method here in order to show how it works. :smiley:
 
 Here is how the `newRecords` DF looks like.
 
@@ -141,9 +143,9 @@ LastVisit|title|url|last_visit_time|BrowserID
  2020-01-27 00:32:14|göreme in the cappadocia region of turkey 4k -...|https://www.google.com/search?hl=en&biw=1714&b...|13224587534975438|2.0
 
 
-In most cases, we do not need to keep all the records of when did we browse that url. We only need to know when we last visited it, which will make our table compact and more efficient also. In order to guarantee this, I added an `unique` constraint to the `History` table's `url` column. It is not supposed to be triggered if our works on the DF are all good, but never say never right? It did trigger a couple of times when I was trying to load the records into the table.  :sweat_smile: 
+Since it is unnecessary to keep all the records of the same url in most cases, I added an `unique` constraint to the `History` table's `url` column in order to keep the table more compact. It is not supposed to be triggered if our works on the DF are all good, but it is always good to add extract layer of safe net if it won't cost too much.
 
-Thanks to that constraint. I fixed my error before loading them into the table.    :sweat_drops:   :sweat_drops:
+Thanks to that constraint. I fixed some of my errors before loading records into the table.    :sweat_drops:   :sweat_drops:
 
 Here is what we need to do to avoid triggering the unique constraint.
 ```python
@@ -153,7 +155,9 @@ newRecords.sort_values('LastVisit',inplace=True)
 newRecordswoDup = newRecords.drop_duplicates('url',keep='last')
 ```
 
-No more duplicates in the DF now. Then we should decide which record needs to be inserted or updated according to whether the url is already in the `History` table. We can do that by adding a new column called `newUrl` and set the default value to `0` which means the record is **not** new url. 
+There should be no duplicates in the DF now. 
+
+Now, we should decide which record needs to be inserted or updated according to whether the url is already in the `History` table. We can do that by adding a new column called `newUrl` and set the default value to `0` which means the record is **not** a new url. 
 Then we can select the urls that are not in the `Hisotry` table and assign value `1` to them.
 ```python
 newRecordswoDup['newUrl'] = 0
@@ -190,7 +194,7 @@ needUpdateUrls = newRecordswoDup.loc[newRecordswoDup.newUrl==0,['LastVisit', 'ti
 ```
 Wondering why I use the `.values` above? Please refer to the ***Bonus Reading*** part of this post.  :sunglasses:
 
-Take a deep breath before running the codes below because all our works above will not change our DB's table, but these will.  :eyes:
+Take a deep breath before running the codes below because all our works above will not change our DB, but these will.  :eyes:
 ```python
 cursor = myHistoryDB.cursor()
 cursor.executemany(updateQuery,needUpdateUrls)
@@ -208,7 +212,7 @@ Here is the output.
  (2, 'Vivaldi', 3590, 13226125535957899, '2020-02-13 19:45:35'),
  (1, 'FireFox', 4262, 1581657153485000, '2020-02-13 21:12:33')]
 ```
-The `LastVisit` column of the summary result changed from our previous result.
+This is the original summary DF.
 
 BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 ---|---|---|---|---|
@@ -217,12 +221,16 @@ BrowserID|Browser|totHistories|latestVisitedTime|LastVisit
 2|Vivaldi|3590|13224916461501190|2020-01-30 19:54:21
 1|FireFox|4248|1580458216689000|2020-01-31 00:10:16
 
-Great! We can commit our update query's work to the DB now.
+
+The `LastVisit` column of the summary result **changed** from our previous result.  :v::v:
+
+
+Great! We can commit our update query's work to the DB now. This is the step that we change the DB.
 ```python
 myHistoryDB.commit()
 ```
 
-**Let's check whether it worked from DB** by checking what is the current summary of the DB.
+**Let's check whether it worked from DB** by checking what is the current summary of `History` table.
 ```python
 pd.read_sql(query,myHistoryDB)
 ```
@@ -240,18 +248,26 @@ Are we done? Not yet!
 
 Do not forget those **new** urls. It is easy though. Just one line of code will work perfectly.
 ```python
-newRecordswoDup.loc[(newRecordswoDup.newUrl==1),allRecords.columns[1:]].to_sql('History',myHistoryDB,if_exists='append',index=False)
+newRecordswoDup.loc[(newRecordswoDup.newUrl==1),allRecords.columns[1:]]._
+			to_sql('History',myHistoryDB,if_exists='append',index=False)
 ```
 
-I like to add an `assert` to reassure myself. So if the original count of the urls *plus* the total of the new urls does not equal to the current total url count of the `History` table, it will raise an error, which means something wrong. We need to dig into the `History` table to find out. 
+I like to add an `assert` to reassure myself. So if the original count of the urls *plus* the total of the new inserted urls does not equal to the current total url count of the `History` table, it will raise an error. If we did see an error, we need to dig into the `History` table and the `newRecords` DF to find out what's wrong. 
 ```python
-assert myHisSummary.totHistories.sum() + (newRecordswoDup.newUrl==1).sum() ==pd.read_sql(query,myHistoryDB).totHistories.sum(), 'DB record count != new added'
+assert myHisSummary.totHistories.sum() + (newRecordswoDup.newUrl==1).sum() == _
+		pd.read_sql(query,myHistoryDB).totHistories.sum(), 'DB record count != new added'
 ```
 If no error, our `History` table is up to date! 
+
 ### :checkered_flag:   Job done!!   :checkered_flag:
 
 ### Thoughts.   :thought_balloon:  :thought_balloon:
-Not everyone uses multiple browsers and eager to keep and consolidate those browse histories like me, but those concepts and codes here can be applied to any other consolidation scenarios such as consolidating excel/csv format bank statements into one table. I actually did that for my company, which boosted my efficiency a lot.   :v:
+Not everyone uses multiple browsers and eager to keep and consolidate those browse histories like me, but those concepts and codes here can be applied to any other consolidation scenarios such as consolidating excel/csv format bank statements into one table. 
+
+
+I actually did that for my company, which boosted my efficiency a lot.   :v:
+
+
 Another reason I chose databases instead of excel/csv to consolidate except for I need that `History` table for myself is I saw plenty of tutorials or posts regarding using python to interact with excel/csv and database, but not too much for the interactions across databases. And browse's databases are the most convenient real-world databases you can get easily from your computer.
 
 That is it. Here is my first original post.
