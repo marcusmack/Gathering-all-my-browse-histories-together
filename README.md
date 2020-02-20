@@ -168,8 +168,10 @@ Ha. The `allRecords` DF is not just for backup purpose only. :sunglasses:
 
 Let's check how many records need to be updated and inserted respectively.
 ```python
-print('**** {} records should be updated. ****'.format(newRecordswoDup.url[newRecordswoDup.newUrl==0].size))
-print('**** {} records should be inserted. ****'.format(newRecordswoDup.url[newRecordswoDup.newUrl==1].size))
+print('**** {} records should be updated. ****'.format(
+		newRecordswoDup.groupby('newUrl').count()['url'][0]))
+print('**** {} records should be inserted. ****'.format(
+		newRecordswoDup.groupby('newUrl').count()['url'][1]))
 ```
 ```
 **** 155 records should be updated. ****
@@ -190,7 +192,8 @@ where url = ?
 '''
 ```
 ```python
-needUpdateUrls = newRecordswoDup.loc[newRecordswoDup.newUrl==0,['LastVisit', 'title', 'last_visit_time', 'BrowserID','url']].values
+needUpdateUrls = newRecordswoDup.loc[newRecordswoDup.newUrl==0,
+		['LastVisit', 'title', 'last_visit_time', 'BrowserID','url']].values
 ```
 Wondering why I use the `.values` above? Please refer to the ***Bonus Reading*** part of this post.  :sunglasses:
 
