@@ -271,12 +271,14 @@ If no error, our `History` table is up to date!
 ### Thoughts.   :thought_balloon:  :thought_balloon:
 Not everyone uses multiple browsers and eager to keep and consolidate those browse histories like me, but those concepts and codes here can be applied to any other consolidation scenarios such as consolidating excel/csv format bank statements into one table. 
 
-
 I actually did that for my company, which boosted my efficiency a lot.   :v:
-
 
 Another reason I chose databases instead of excel/csv to consolidate except for I need that `History` table for myself is I saw plenty of tutorials or posts regarding using python to interact with excel/csv and database, but not too much for the interactions across databases. And browse's databases are the most convenient real-world databases you can get easily from your computer.
 
-That is it. Here is my first original post.
+That is it. Here is my first original post. 
+
+Noticed this github page does not display my emojis. If you want to get rid of those emoji strings, feel free to click the `View On GitHub`button on the left panel.
 
 Thanks for your time reading my first post. Hope you enjoyed it.
+
+
