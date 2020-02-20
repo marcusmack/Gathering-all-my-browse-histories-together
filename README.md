@@ -277,7 +277,7 @@ Another reason I chose databases instead of excel/csv to consolidate except for 
 
 That is it. Here is my first original post. 
 
-Noticed this github page does not display my emojis. If you want to get rid of those emoji strings, feel free to click the `View On GitHub`button on the left panel.
+Noticed this github page does not display my emojis. If you want to get rid of those emoji strings, feel free to click the `View On GitHub` button on the left panel.
 
 Thanks for your time reading my first post. Hope you enjoyed it.
 
