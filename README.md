@@ -24,14 +24,16 @@ browserConns = {1:ffconn, 2:vvconn, 3:operaconn,4:braveconn}
 Then, create another dictionary called `queries` for the queries we are going to use to pull records from the browsers' DBs. Why 4 browsers but only 2 queries? It is because browser 2, 3, and 4 are all Chromium-based browser. They all use the same method to convert the numeric datetime to normal datetime format. You will see what I mean in the summary table output.
 ```Python
 FFquery = '''
-SELECT DATETIME(last_visit_date/1000000,'unixepoch','localtime') as LastVisit,title,url,last_visit_date as last_visit_time
+SELECT DATETIME(last_visit_date/1000000,'unixepoch','localtime') as LastVisit,
+	title,url,last_visit_date as last_visit_time
 from moz_places
 where last_visit_date > {}
 order by last_visit_date;
 '''
 
 chrquery = '''
-SELECT datetime(last_visit_time/1000000-11644473600,'unixepoch','localtime') as LastVisit,title,url,last_visit_time
+SELECT datetime(last_visit_time/1000000-11644473600,'unixepoch','localtime') as LastVisit,
+	title,url,last_visit_time
 from urls
 where last_visit_time > {}
 order by last_visit_time;
@@ -46,7 +48,9 @@ The `History` table which is the table stores all the records, was created and h
 Let's get the latest history records by browsers from table `History`. 
 ```Python
 query = '''
-SELECT BrowserID,Browser,count(*) as totHistories,max(last_visit_time) as latestVisitedTime, max(LastVisit) as LastVisit
+SELECT BrowserID,Browser,count(*) as totHistories,
+	max(last_visit_time) as latestVisitedTime, 
+	max(LastVisit) as LastVisit
 from History
 INNER join Browsers on History.BrowserID = Browsers.id
 group by BrowserID
@@ -251,13 +255,13 @@ Are we done? Not yet!
 
 Do not forget those **new** urls. It is easy though. Just one line of code will work perfectly.
 ```python
-newRecordswoDup.loc[(newRecordswoDup.newUrl==1),allRecords.columns[1:]]._
+newRecordswoDup.loc[(newRecordswoDup.newUrl==1),allRecords.columns[1:]].\
 			to_sql('History',myHistoryDB,if_exists='append',index=False)
 ```
 
 I like to add an `assert` to reassure myself. So if the original count of the urls *plus* the total of the new inserted urls does not equal to the current total url count of the `History` table, it will raise an error. If we did see an error, we need to dig into the `History` table and the `newRecords` DF to find out what's wrong. 
 ```python
-assert myHisSummary.totHistories.sum() + (newRecordswoDup.newUrl==1).sum() == _
+assert myHisSummary.totHistories.sum() + (newRecordswoDup.newUrl==1).sum() == \
 		pd.read_sql(query,myHistoryDB).totHistories.sum(), 'DB record count != new added'
 ```
 If no error, our `History` table is up to date! 
