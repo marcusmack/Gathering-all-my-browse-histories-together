@@ -76,7 +76,7 @@ It is my habit to keep a copy of the table I am going to change. So if something
 ```Python
 allRecords = pd.read_sql(r'select * from History',myHistoryDB)
 ```
-Let's see how the `History` table looks like.
+Let's see what does the `History` table look like.
 
 id | LastVisit	| title	| url	| last_visit_time	| BrowserID
 ---- | ----	| ----	| ----	| ----	| ----
@@ -134,7 +134,7 @@ Here is the summary output.
 ```
 ***Bonus Reading:*** Thanks to [Wei Xia](https://medium.com/@xiawei27149)'s this wonderful [article](https://medium.com/swlh/how-to-efficiently-loop-through-pandas-dataframe-660e4660125d) . I realized that using the build-in `itertuples` function is not the best way to loop through a dataframe(DF). But since our `myHisSummary` DF has only 4 rows, it won't be any big difference. So I keep the `itertuples` method here in order to show how it works. :smiley:
 
-Here is how the `newRecords` DF looks like.
+Here is what does the `newRecords` DF look like.
 
 LastVisit|title|url|last_visit_time|BrowserID
 ---|---|---|---|---|
